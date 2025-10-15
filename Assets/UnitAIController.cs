@@ -13,16 +13,21 @@ public class UnitAIController : MonoBehaviour
     private NavMeshAgent agent;
     private float lastUpdateTime;
     private AttackController attackController;
+    private UnitMovement unitMovement;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         attackController = GetComponent<AttackController>();
+        unitMovement = GetComponent<UnitMovement>();
     }
 
 
     void Update()
     {
+        if (unitMovement != null && unitMovement.isCommanded)
+            return;
+
         if (attackController == null || attackController.targetToAttack == null)
             return;
 

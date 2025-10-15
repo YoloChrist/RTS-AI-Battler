@@ -14,9 +14,11 @@ public class UnitSelectionManager : MonoBehaviour
 
     InputAction clickAction;
     InputAction shiftAction;
+    InputAction rightClickAction;
 
     public LayerMask ground; // Layer mask to specify what is considered ground
     public LayerMask clickableArea; // Layer mask to specify what is considered clickable area
+    public LayerMask Attackable;
     public GameObject groundMarker;
 
     private Camera cam;
@@ -36,10 +38,12 @@ public class UnitSelectionManager : MonoBehaviour
     private void Start()
     {
         clickAction = InputSystem.actions.FindAction("Click");                   
-        shiftAction = InputSystem.actions.FindAction("MultiSelect");             
+        shiftAction = InputSystem.actions.FindAction("MultiSelect");
+        rightClickAction = InputSystem.actions.FindAction("Right Click");
         cam = Camera.main; // Get the main camera reference
 
         clickAction.performed += OnClickPerformed; // Subscribe to the click action event
+        rightClickAction.performed += OnRightClickPerformed;
     }
 
     private void OnDestroy()
@@ -67,6 +71,21 @@ public class UnitSelectionManager : MonoBehaviour
         {
             if (!shiftAction.IsPressed())
                 DeselectAll();
+        }
+    }
+
+    private void OnRightClickPerformed(InputAction.CallbackContext context)
+    {
+        RaycastHit hit;
+        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, Attackable))
+        {
+            Transform target = hit.transform;
+
+            foreach (GameObject unit in selectedUnits)
+            {
+                unit.GetComponent<AttackController>().targetToAttack = target;
+            }
         }
     }
 

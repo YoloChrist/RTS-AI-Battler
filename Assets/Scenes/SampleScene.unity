@@ -444,7 +444,7 @@ GameObject:
   - component: {fileID: 364422596}
   - component: {fileID: 364422595}
   - component: {fileID: 364422594}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -947,7 +947,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 272653776852525091, guid: 7e34eff9119572a489ee0e4f2f669d00, type: 3}
       propertyPath: m_Radius
-      value: 25
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 272653776852525091, guid: 7e34eff9119572a489ee0e4f2f669d00, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 556647823680713528, guid: 7e34eff9119572a489ee0e4f2f669d00, type: 3}
       propertyPath: m_Enabled
@@ -1039,6 +1043,9 @@ MonoBehaviour:
   clickableArea:
     serializedVersion: 2
     m_Bits: 128
+  Attackable:
+    serializedVersion: 2
+    m_Bits: 256
   groundMarker: {fileID: 0}
 --- !u!4 &1072107474
 Transform:

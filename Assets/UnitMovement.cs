@@ -9,6 +9,8 @@ public class UnitMovement : MonoBehaviour
     NavMeshAgent agent; // Reference to the NavMeshAgent component
     public LayerMask ground; // Layer mask to specify what is considered ground
 
+    public bool isCommanded; // Bool whether the unit has been commanded - stop auto actions
+
     private void Start()
     {
         rightClickAction = InputSystem.actions.FindAction("Right Click"); // Find the "Right Click" action from the Input System
@@ -25,7 +27,12 @@ public class UnitMovement : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground)) // Perform a raycast and check if it hits the ground layer
             {
                 agent.SetDestination(hit.point); // Set the agent's destination to the ray's hit point
+                isCommanded = true;
             }
+        }
+        if (agent.hasPath == false || agent.remainingDistance <= agent.stoppingDistance)
+        {
+            isCommanded = false;
         }
     }
 }
