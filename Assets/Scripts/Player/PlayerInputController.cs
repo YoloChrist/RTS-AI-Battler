@@ -47,7 +47,6 @@ public class PlayerInputController : MonoBehaviour
         // Otherwise, move on ground
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
         {
-            Debug.Log("Moving units to " + hit.point);
             foreach (var unitObj in UnitSelectionManager.instance.selectedUnits)
             {
                 var sensor = unitObj.GetComponent<TargetSensor>();
