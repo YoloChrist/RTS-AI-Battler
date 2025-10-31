@@ -16,7 +16,7 @@ public class UnitRuntimeStats : MonoBehaviour, IDamageable
 
     public event Action<UnitRuntimeStats> Died;
     public event Action<int> HealthChanged;
-
+    
     void Awake()
     {
         if (definition != null)
@@ -42,7 +42,6 @@ public class UnitRuntimeStats : MonoBehaviour, IDamageable
     public void ApplyDamage(int rawDamage)
     {
         int actual = Mathf.Max(1, rawDamage - Defense);
-        Debug.Log("" + name + " took " + actual + " damage (raw: " + rawDamage + ", def: " + Defense + ")");
         CurrentHealth = Mathf.Max(0, CurrentHealth - actual);
 
         HealthChanged?.Invoke(CurrentHealth);

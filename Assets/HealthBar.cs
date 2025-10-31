@@ -26,7 +26,6 @@ public class HealthBar : MonoBehaviour
         if (unitStats != null)
         {
             updateBarValue(currentHealth, unitStats.MaxHealth);
-            Debug.Log("HealthBar: Updated bar value to " + currentHealth + "/" + unitStats.MaxHealth);
         }
     }
 

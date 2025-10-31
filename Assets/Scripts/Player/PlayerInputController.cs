@@ -13,7 +13,7 @@ public class PlayerInputController : MonoBehaviour
     {
         cam = Camera.main;
     }
-
+    
     private void Start()
     {
         rightClickAction = InputSystem.actions.FindAction("Right Click");
