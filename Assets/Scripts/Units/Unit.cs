@@ -15,7 +15,6 @@ public class Unit : MonoBehaviour, ISelectable
     public string UnitType => gameObject.tag;
     public string UnitName => gameObject.name;
     public Vector3 Position => transform.position;
-    //public float CurrentHealth => _stats != null ? _stats.CurrentHealth : 0f;
     public float CurrentHealth { get; private set; }
     public float MaxHealth => _stats != null ? _stats.MaxHealth : 0f;
     public float MovementSpeed => _stats != null ? _stats.MovementSpeed : 0f;

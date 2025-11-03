@@ -275,17 +275,6 @@ public class GameStateManager : MonoBehaviour
                 
                 // Sync movement target
                 UnitMovement movement = unit.GetComponent<UnitMovement>();
-                //if (movement != null && movement.isCommanded)
-                //{
-                //    NavMeshAgent agent = unit.GetComponent<NavMeshAgent>();
-                //    if (agent != null && agent.hasPath)
-                //    {
-                //        data.movementCommand = new MovementCommand(
-                //            agent.destination, 
-                //            agent.speed
-                //        );
-                //    }
-                //}
                 if (movement!= null && movement.isCommanded)
                 {
                     data.movementCommand = new MovementCommand(movement.TargetDestination, data.moveSpeed);
