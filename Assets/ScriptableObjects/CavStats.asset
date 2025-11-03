@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2005b65ddf8264b91f2e56e037d52d, type: 3}
   m_Name: CavStats
   m_EditorClassIdentifier: Assembly-CSharp::UnitStats
-  displayName: 
+  displayName: Cavalry
   baseHealth: 150
   baseAttack: 25
   baseDefense: 5
+  baseAttackRange: 1
+  baseAttackSpeed: 3
