@@ -12,5 +12,4 @@ public class UnitStats : ScriptableObject
     public int baseDefense = 5;
     public float baseAttackRange = 1;
     public float baseAttackSpeed = 3;
-    public float baseMovementSpeed = 3.5f;
 }

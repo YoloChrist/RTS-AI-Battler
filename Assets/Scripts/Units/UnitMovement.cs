@@ -9,10 +9,6 @@ public class UnitMovement : MonoBehaviour
 
     public bool isCommanded;
 
-    private Vector3 targetDestination;
-
-    public Vector3 TargetDestination { get => targetDestination; set => targetDestination = value; }
-
     private void Start()
     {
         cam = Camera.main;
@@ -32,6 +28,5 @@ public class UnitMovement : MonoBehaviour
         if (agent == null) return;
         agent.SetDestination(destination);
         isCommanded = true;
-        targetDestination = destination;
     }
 }
