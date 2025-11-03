@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +30,9 @@ public class UnitSelectionManager : MonoBehaviour
         {
             instance = this;
         }
+
+        Unit.OnUnitSpawned += HandleUnitSpawned;
+        Unit.OnUnitDestroyed += HandleUnitDestroyed;
     }
 
     private void Start()
@@ -52,6 +52,9 @@ public class UnitSelectionManager : MonoBehaviour
             clickAction.performed -= OnClickPerformed;
         if (rightClickAction != null)
             rightClickAction.performed -= OnRightClickPerformed;
+
+        Unit.OnUnitSpawned -= HandleUnitSpawned;
+        Unit.OnUnitDestroyed -= HandleUnitDestroyed;
     }
 
     private void OnClickPerformed(InputAction.CallbackContext context) // Handle click action
@@ -162,5 +165,23 @@ public class UnitSelectionManager : MonoBehaviour
     {
         TriggerSelectionHighlight(unit, isSelected);
         EnableUnitMovement(unit, isSelected);
+    }
+
+    public void HandleUnitSpawned(Unit unit)
+    {
+        Debug.Log("Unit spawned: " + unit.name);
+        if (unit.CompareTag("Player"))
+        {
+            playerUnits.Add(unit.gameObject);
+        }
+    }
+
+    public void HandleUnitDestroyed(Unit unit)
+    {
+        if (unit.CompareTag("Player"))
+        {
+            playerUnits.Remove(unit.gameObject);
+            selectedUnits.Remove(unit.gameObject);
+        }
     }
 }
