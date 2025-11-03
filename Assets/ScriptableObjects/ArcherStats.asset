@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2005b65ddf8264b91f2e56e037d52d, type: 3}
   m_Name: ArcherStats
   m_EditorClassIdentifier: Assembly-CSharp::UnitStats
-  displayName: 
+  displayName: Archer
   baseHealth: 100
   baseAttack: 20
   baseDefense: 1
+  baseAttackRange: 1
+  baseAttackSpeed: 3
