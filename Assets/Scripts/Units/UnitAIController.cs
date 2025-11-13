@@ -65,7 +65,6 @@ public class UnitAIController : MonoBehaviour
         combat.TryAttack(targetSensor.targetToAttack);
     }
 
-    // External systems should use these so subscriptions are managed by TargetSensor
     public void SetTarget(Transform target)
     {
         if (targetSensor != null)
