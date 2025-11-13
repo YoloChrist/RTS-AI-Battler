@@ -1,0 +1,111 @@
+using System;
+using System.Collections;
+using System.Text;
+using UnityEngine;
+using UnityEngine.Networking;
+
+
+[Serializable]
+public class ClaudeRequest
+{
+    public string model;
+    public int max_tokens;
+    public ClaudeMessage[] messages;
+    public float temperature = 0.7f;
+}
+
+[Serializable]
+public class ClaudeMessage
+{
+    public string role;
+    public string content;
+}
+
+[Serializable]
+public class ClaudeResponse
+{
+    public string id;
+    public string type;
+    public string role;
+    public ClaudeContent[] content;
+    public string model;
+    public string stop_reason;
+}
+
+[Serializable]
+public class ClaudeContent
+{
+    public string type;
+    public string text;
+}
+
+public class LLMApiClient : MonoBehaviour
+{
+    [SerializeField] private string apiKey = "YOUR_API_KEY";
+    [SerializeField] private string apiUrl = "https://api.anthropic.com/v1/messages";
+    [SerializeField] private string modelName = "claude-haiku-4-5";
+    [SerializeField] private string anthropicVersion = "2023-06-01";
+
+    public static LLMApiClient instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void AnalyzeGameState(string gameStateJSON, string customPrompt, Action<string> onSuccess, Action<string> onError)
+    {
+        StartCoroutine(SendClaudeRequest(gameStateJSON, customPrompt, onSuccess, onError));
+    }
+
+    private IEnumerator SendClaudeRequest(string gameStateJSON, string userPrompt, Action<string> onSuccess, Action<string> onError)
+    {
+        string fullPrompt = $"{userPrompt}\n\n Game State Data:\n {gameStateJSON}";
+
+        ClaudeRequest requestData = new ClaudeRequest
+        {
+            model = modelName,
+            max_tokens = 1024,
+            temperature = 0.7f,
+            messages = new ClaudeMessage[]
+            {
+                new ClaudeMessage { role = "user", content = fullPrompt }
+            }
+        };
+
+        string jsonBody = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+        using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("x-api-key", apiKey);
+            request.SetRequestHeader("antrhopic-version", anthropicVersion);
+
+            Debug.Log("Sending request to Claude API...");
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string responseText = request.downloadHandler.text;
+                Debug.Log("Response: {responseText}");
+            }
+
+            else
+                Debug.LogError($"Error: {request.error}\n{request.downloadHandler.text}");
+        }
+    }
+
+
+}
