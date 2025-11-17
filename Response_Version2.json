@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "Response.json",
+  "title": "Response",
+  "description": "Standard LLM response object",
+  "type": "object",
+  "properties": {
+    "orderID": {
+      "type": "integer",
+      "description": "Unique identifier for the order",
+      "minimum": 0
+    },
+    "orderType": {
+      "type": "string",
+      "description": "Type of order",
+      "enum": [ "MOVE", "ATTACK" ]
+    },
+    "targetPosition": {
+      "type": "array",
+      "description": "Target position for the order",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "targetUnit": {
+      "type": "string",
+      "description": "Target unitID to attack"
+    },
+    "unitsInOrder": {
+      "type": "array",
+      "description": "Unit IDs for all units in the order",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    }
+  },
+  "required": [ "orderID", "orderType", "unitsInOrder" ]
+}
