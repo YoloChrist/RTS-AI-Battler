@@ -169,7 +169,6 @@ public class UnitSelectionManager : MonoBehaviour
 
     public void HandleUnitSpawned(Unit unit)
     {
-        Debug.Log("Unit spawned: " + unit.name);
         if (unit.CompareTag("Player"))
         {
             playerUnits.Add(unit.gameObject);

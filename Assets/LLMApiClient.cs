@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Text;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -63,13 +65,25 @@ public class LLMUsage
     public int total_tokens;
 }
 
+// Events
+[Serializable]
+public class LLMResponseEvent : UnityEngine.Events.UnityEvent<string> { }
+
 // ===== MAIN API CLIENT =====
 public class LLMApiClient : MonoBehaviour
 {
     [Header("LLM Configuration")]
     [SerializeField] private LLMConfig config = new LLMConfig();
 
+    [Header("Events")]
+    public LLMResponseEvent OnResponse = new LLMResponseEvent();
+
     private static LLMApiClient instance;
+    public static LLMApiClient Instance => instance;
+
+    private string gameStateJSON;
+
+
 
     private void Awake()
     {
@@ -86,19 +100,26 @@ public class LLMApiClient : MonoBehaviour
 
     private void Start()
     {
-        TestConnection(success =>
-        {
-            if (success)
-                Debug.Log("[LLM] Connection test successful.");
-            else
-                Debug.LogError("[LLM] Connection test failed.");
-        });
+        Invoke(nameof(ManualAnalyze), 5f);
     }
 
     // Main method for game state analysis
-    public void AnalyzeGameState(string gameStateJSON, string customPrompt, Action<string> onSuccess, Action<string> onError)
+    private void AnalyzeCurrentGameState(string customPrompt, Action<string> onSuccess, Action<string> onError)
+    {
+        if (GameStateManager.Instance == null)
+        {
+            onError?.Invoke("GameStateManager instance not found.");
+            return;
+        }
+
+        string gameStateData = GameStateManager.Instance.SaveGameState();
+        AnalyzeGameState(gameStateData, customPrompt, onSuccess, onError);
+    }
+
+    private void AnalyzeGameState(string gameStateJSON, string customPrompt, Action<string> onSuccess, Action<string> onError)
     {
         string fullPrompt = $"{customPrompt}\n\n## Game State Data:\n```json\n{gameStateJSON}\n```";
+        Debug.Log(fullPrompt);
         StartCoroutine(SendLLMRequest(fullPrompt, onSuccess, onError));
     }
 
@@ -151,6 +172,7 @@ public class LLMApiClient : MonoBehaviour
                     {
                         string content = response.choices[0].message.content;
                         onSuccess?.Invoke(content);
+                        OnResponse?.Invoke(content);
                     }
                     else
                         onError?.Invoke("No valid response content");
@@ -214,5 +236,14 @@ public class LLMApiClient : MonoBehaviour
         }
 
         callback?.Invoke(success && completed);
+    }
+
+    private void ManualAnalyze()
+    {
+        Debug.Log("[LLM] Analyzing current game state...");
+        AnalyzeCurrentGameState("Provide strategic recommendations based on the current game state.",
+            onSuccess: response => Debug.Log($"[LLM] Strategic recommendations: {response}"),
+            onError: error => Debug.LogError($"[LLM] Analysis error: {error}")
+            );
     }
 }

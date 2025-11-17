@@ -56,7 +56,7 @@ public class AttackCommand
 public class UnitData
 {
     public string unitId;
-    public string unitType; // "player" or "enemy"
+    public string unitTeam; // "player" or "enemy"
     public string unitName;
     public UnitPosition currentPosition;
     public MovementCommand movementCommand;
@@ -69,7 +69,7 @@ public class UnitData
     public UnitData(string _id, string _type, string _name, Vector3 _position, float _hp, float _maxHp, float _speed, float _attackSpeed)
     {
         unitId = _id;
-        unitType = _type;
+        unitTeam = _type;
         unitName = _name;
         currentPosition = new UnitPosition(_position);
         health = _hp;
@@ -94,7 +94,8 @@ public class GameStateManager : MonoBehaviour
     private Dictionary<string, Unit> unitReferences = new Dictionary<string, Unit>();
     private GameStateSerializer serializer;
 
-    public static GameStateManager instance;
+    private static GameStateManager instance;
+    public static GameStateManager Instance => instance;
 
     private float saveTimer = 0f;
     [SerializeField] private float saveInterval = 10f;
@@ -207,18 +208,22 @@ public class GameStateManager : MonoBehaviour
 
     public List<UnitData> GetPlayerUnits()
     {
-        return gameState.units.FindAll(unit => unit.unitType == "player");
+        return gameState.units.FindAll(unit => unit.unitTeam == "player");
     }
 
     public List<UnitData> GetEnemyUnits()
     {
-        return gameState.units.FindAll(unit => unit.unitType == "enemy");
+        return gameState.units.FindAll(unit => unit.unitTeam == "enemy");
     }
 
-    public void SaveGameState()
+    public string SaveGameState()
     {
         SyncAllUnitsFromReferences();
         serializer.Save(gameState);
+
+        // Convert to string and return it
+        string gameStateJSON = JsonUtility.ToJson(gameState, true);
+        return gameStateJSON;
     }
     
     public void LoadGameState()
